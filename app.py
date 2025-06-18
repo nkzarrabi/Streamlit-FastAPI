@@ -7,7 +7,7 @@ import pandas as pd
 API_URL = "http://localhost:8000"
 
 # Fetch samples data from the backend API
-response = requests.get(f"{API_URL}/samples")
+response = requests.get(f"{API_URL}/samples", timeout=60)
 if response.status_code != 200:
     st.error("Failed to fetch samples from the API")
     st.stop()
@@ -39,7 +39,7 @@ with st.sidebar.form("add_form"):
     # Handle Add Sample form submission
     if add_button:
         add_params = {"city": add_city, "count": add_count}
-        add_response = requests.post(f"{API_URL}/samples", params=add_params)
+        add_response = requests.post(f"{API_URL}/samples", params=add_params, timeout=60)
         if add_response.status_code == 200:
             st.success("Sample added successfully")
             samples.append(add_response.json())
@@ -60,7 +60,7 @@ with st.sidebar.form("update_form"):
     # Handle Update Sample form submission
     if update_button:
         update_params = {"city": update_city, "count": update_count}
-        update_response = requests.put(f"{API_URL}/samples/{update_id}", params=update_params)
+        update_response = requests.put(f"{API_URL}/samples/{update_id}", params=update_params, timeout=60)
         if update_response.status_code == 200:
             st.success("Sample updated successfully")
             index = next((i for i, sample in enumerate(samples) if sample["id"] == update_id), None)
@@ -80,7 +80,7 @@ with st.sidebar.form("delete_form"):
 
     # Handle Delete Sample form submission
     if delete_button:
-        delete_response = requests.delete(f"{API_URL}/samples/{delete_id}")
+        delete_response = requests.delete(f"{API_URL}/samples/{delete_id}", timeout=60)
         if delete_response.status_code == 200:
             st.success("Sample deleted successfully")
             index = next((i for i, sample in enumerate(samples) if sample["id"] == delete_id), None)
